@@ -6,6 +6,7 @@
 #include <vector>
 
 #include <ruckig/error.hpp>
+#include <ruckig/optional.hpp>
 #include <ruckig/profile.hpp>
 
 
@@ -176,7 +177,7 @@ public:
 
     //! Get the kinematic state, the jerk, and the section at a given time
     void at_time(double time, Vector<double>& new_position, Vector<double>& new_velocity, Vector<double>& new_acceleration, Vector<double>& new_jerk, size_t& new_section) const {
-        if constexpr (DOFs == 0) {
+        if (DOFs == 0) {
             if (degrees_of_freedom != new_position.size() || degrees_of_freedom != new_velocity.size() || degrees_of_freedom != new_acceleration.size() || degrees_of_freedom != new_jerk.size()) {
                 throw RuckigError("mismatch in degrees of freedom (vector size).");
             }
@@ -191,7 +192,7 @@ public:
     //! Get the kinematic state at a given time
     //! The Python wrapper takes `time` as an argument, and returns `new_position`, `new_velocity`, and `new_acceleration` instead.
     void at_time(double time, Vector<double>& new_position, Vector<double>& new_velocity, Vector<double>& new_acceleration) const {
-        if constexpr (DOFs == 0) {
+        if (DOFs == 0) {
             if (degrees_of_freedom != new_position.size() || degrees_of_freedom != new_velocity.size() || degrees_of_freedom != new_acceleration.size()) {
                 throw RuckigError("mismatch in degrees of freedom (vector size).");
             }
@@ -205,7 +206,7 @@ public:
 
     //! Get the position at a given time
     void at_time(double time, Vector<double>& new_position) const {
-        if constexpr (DOFs == 0) {
+        if (DOFs == 0) {
             if (degrees_of_freedom != new_position.size()) {
                 throw RuckigError("mismatch in degrees of freedom (vector size).");
             }
@@ -289,9 +290,9 @@ public:
     }
 
     //! Get the time that this trajectory passes a specific position of a given DoF the first time
-    std::optional<double> get_first_time_at_position(size_t dof, double position, double time_after=0.0) const {
+    Optional<double> get_first_time_at_position(size_t dof, double position, double time_after=0.0) const {
         if (dof >= degrees_of_freedom) {
-            return std::nullopt;
+            return nullopt;
         }
 
         double time;
@@ -301,7 +302,7 @@ public:
                 return section_time + time;
             }
         }
-        return std::nullopt;
+        return nullopt;
     }
 };
 

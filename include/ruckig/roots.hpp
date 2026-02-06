@@ -288,13 +288,16 @@ inline PositiveSet<double, 4> solve_quart_monic(const std::array<double, 4>& pol
 }
 
 
+//! Evaluate a polynomial of order N at x (specialization for N == 0)
+template<size_t N>
+inline typename std::enable_if<N == 0, double>::type poly_eval(const std::array<double, N>&, double) {
+    return 0.0;
+}
+
 //! Evaluate a polynomial of order N at x
 template<size_t N>
-inline double poly_eval(const std::array<double, N>& p, double x) {
+inline typename std::enable_if<(N > 0), double>::type poly_eval(const std::array<double, N>& p, double x) {
     double retVal = 0.0;
-    if constexpr (N == 0) {
-        return retVal;
-    }
 
     if (std::abs(x) < DBL_EPSILON) {
         retVal = p[N - 1];

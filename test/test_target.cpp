@@ -3,7 +3,6 @@
 
 #include <deque>
 #include <random>
-#include <optional>
 #include "randomizer.hpp"
 
 #include <ruckig/error.hpp>
@@ -337,7 +336,7 @@ TEST_CASE("trajectory") {
     input.max_velocity = {800.0, 1.0, 1.0};
     input.max_acceleration = {40000.0, 1.0, 1.0};
     input.max_jerk = {200000.0, 1.0, 1.0};
-    input.minimum_duration = std::nullopt;
+    input.minimum_duration = nullopt;
     result = otg.update(input, output);
 
     CHECK( result == Result::Working );
@@ -695,7 +694,7 @@ TEST_CASE("per-dof-setting") {
 
 
     input.control_interface = ControlInterface::Position;
-    input.per_dof_control_interface = std::nullopt;
+    input.per_dof_control_interface = nullopt;
     input.per_dof_synchronization = StandardVector<Synchronization, 3> {Synchronization::None, Synchronization::Time, Synchronization::Time};
 
 

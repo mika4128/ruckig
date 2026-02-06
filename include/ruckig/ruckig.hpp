@@ -3,7 +3,6 @@
 #include <algorithm>
 #include <array>
 #include <chrono>
-#include <format>
 #include <iostream>
 #include <limits>
 #include <math.h>
@@ -179,16 +178,16 @@ public:
 
         if (!input.intermediate_positions.empty() && input.control_interface == ControlInterface::Position) {
             if (input.intermediate_positions.size() > max_number_of_waypoints) {
-                if constexpr (throw_validation_error) {
-                    throw RuckigError(std::format("The number of intermediate positions {} exceeds the maximum number of waypoints {}.", input.intermediate_positions.size(), max_number_of_waypoints));
+                if (throw_validation_error) {
+                    throw RuckigError("The number of intermediate positions " + std::to_string(input.intermediate_positions.size()) + " exceeds the maximum number of waypoints " + std::to_string(max_number_of_waypoints) + ".");
                 }
                 return false;
             }
         }
 
         if (delta_time <= 0.0 && input.duration_discretization != DurationDiscretization::Continuous) {
-            if constexpr (throw_validation_error) {
-                throw RuckigError(std::format("delta time (control rate) parameter {} should be larger than zero.", delta_time));
+            if (throw_validation_error) {
+                throw RuckigError("delta time (control rate) parameter " + std::to_string(delta_time) + " should be larger than zero.");
             }
             return false;
         }
@@ -215,7 +214,7 @@ public:
     Result update(const InputParameter<DOFs, CustomVector>& input, OutputParameter<DOFs, CustomVector>& output) {
         const auto start = std::chrono::steady_clock::now();
 
-        if constexpr (DOFs == 0 && throw_error) {
+        if (DOFs == 0 && throw_error) {
             if (degrees_of_freedom != input.degrees_of_freedom || degrees_of_freedom != output.degrees_of_freedom) {
                 throw RuckigError("mismatch in degrees of freedom (vector size).");
             }

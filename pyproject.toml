@@ -24,7 +24,7 @@ Issues = "https://github.com/pantor/ruckig/issues"
 
 
 [build-system]
-requires = ["scikit-build-core", "nanobind"]
+requires = ["scikit-build-core", "pybind11>=2.9,<2.10"]
 build-backend = "scikit_build_core.build"
 
 [tool.scikit-build]

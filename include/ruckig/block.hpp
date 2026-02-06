@@ -1,10 +1,9 @@
 #pragma once
 
 #include <algorithm>
-#include <format>
 #include <limits>
 #include <numeric>
-#include <optional>
+#include <ruckig/optional.hpp>
 #include <string>
 
 #include <ruckig/profile.hpp>
@@ -47,15 +46,15 @@ public:
     void set_min_profile(const Profile& profile) {
         p_min = profile;
         t_min = p_min.t_sum.back() + p_min.brake.duration + p_min.accel.duration;
-        a = std::nullopt;
-        b = std::nullopt;
+        a = nullopt;
+        b = nullopt;
     }
 
     Profile p_min; // Save min profile so that it doesn't need to be recalculated in Step2
     double t_min; // [s]
 
     // Max. 2 intervals can be blocked: called a and b with corresponding profiles, order does not matter
-    std::optional<Interval> a, b;
+    Optional<Interval> a, b;
 
     template<size_t N, bool numerical_robust = true>
     static bool calculate_block(Block& block, std::array<Profile, N>& valid_profiles, size_t valid_profile_counter) {
@@ -74,7 +73,7 @@ public:
                 return true;
             }
 
-            if constexpr (numerical_robust) {
+            if (numerical_robust) {
                 const size_t idx_min = (valid_profiles[0].t_sum.back() < valid_profiles[1].t_sum.back()) ? 0 : 1;
                 const size_t idx_else_1 = (idx_min + 1) % 2;
 
@@ -147,12 +146,12 @@ public:
     }
 
     std::string to_string() const {
-        std::string result = std::format("[{} ", t_min);
+        std::string result = "[" + std::to_string(t_min) + " ";
         if (a) {
-            result += std::format("{}] [{} ", a->left, a->right);
+            result += std::to_string(a->left) + "] [" + std::to_string(a->right) + " ";
         }
         if (b) {
-            result += std::format("{}] [{} ", b->left, b->right);
+            result += std::to_string(b->left) + "] [" + std::to_string(b->right) + " ";
         }
         return result + "-";
     }

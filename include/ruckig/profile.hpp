@@ -6,8 +6,6 @@
 #include <iomanip>
 #include <iostream>
 #include <limits>
-#include <optional>
-
 #include <ruckig/brake.hpp>
 #include <ruckig/roots.hpp>
 #include <ruckig/utils.hpp>
@@ -71,7 +69,7 @@ public:
             t_sum[i+1] = t_sum[i] + t[i+1];
         }
 
-        if constexpr (limits == ReachedLimits::ACC0) {
+        if (limits == ReachedLimits::ACC0) {
             if (t[1] < std::numeric_limits<double>::epsilon()) {
                 return false;
             }
@@ -81,7 +79,7 @@ public:
             return false;
         }
 
-        if constexpr (control_signs == ControlSigns::UDDU) {
+        if (control_signs == ControlSigns::UDDU) {
             j = {(t[0] > 0 ? jf : 0), 0, (t[2] > 0 ? -jf : 0), 0, (t[4] > 0 ? -jf : 0), 0, (t[6] > 0 ? jf : 0)};
         } else {
             j = {(t[0] > 0 ? jf : 0), 0, (t[2] > 0 ? -jf : 0), 0, (t[4] > 0 ? jf : 0), 0, (t[6] > 0 ? -jf : 0)};
@@ -185,19 +183,19 @@ public:
             t_sum[i+1] = t_sum[i] + t[i+1];
         }
 
-        if constexpr (limits == ReachedLimits::ACC0_ACC1_VEL || limits == ReachedLimits::ACC0_VEL || limits == ReachedLimits::ACC1_VEL || limits == ReachedLimits::VEL) {
+        if (limits == ReachedLimits::ACC0_ACC1_VEL || limits == ReachedLimits::ACC0_VEL || limits == ReachedLimits::ACC1_VEL || limits == ReachedLimits::VEL) {
             if (t[3] < std::numeric_limits<double>::epsilon()) {
                 return false;
             }
         }
 
-        if constexpr (limits == ReachedLimits::ACC0 || limits == ReachedLimits::ACC0_ACC1) {
+        if (limits == ReachedLimits::ACC0 || limits == ReachedLimits::ACC0_ACC1) {
             if (t[1] < std::numeric_limits<double>::epsilon()) {
                 return false;
             }
         }
 
-        if constexpr (limits == ReachedLimits::ACC1 || limits == ReachedLimits::ACC0_ACC1) {
+        if (limits == ReachedLimits::ACC1 || limits == ReachedLimits::ACC0_ACC1) {
             if (t[5] < std::numeric_limits<double>::epsilon()) {
                 return false;
             }
@@ -207,7 +205,7 @@ public:
             return false;
         }
 
-        if constexpr (control_signs == ControlSigns::UDDU) {
+        if (control_signs == ControlSigns::UDDU) {
             j = {(t[0] > 0 ? jf : 0), 0, (t[2] > 0 ? -jf : 0), 0, (t[4] > 0 ? -jf : 0), 0, (t[6] > 0 ? jf : 0)};
         } else {
             j = {(t[0] > 0 ? jf : 0), 0, (t[2] > 0 ? -jf : 0), 0, (t[4] > 0 ? jf : 0), 0, (t[6] > 0 ? -jf : 0)};
@@ -222,20 +220,20 @@ public:
             v[i+1] = v[i] + t[i] * (a[i] + t[i] * j[i] / 2);
             p[i+1] = p[i] + t[i] * (v[i] + t[i] * (a[i] / 2 + t[i] * j[i] / 6));
 
-            if constexpr (limits == ReachedLimits::ACC0_ACC1_VEL || limits == ReachedLimits::ACC0_ACC1 || limits == ReachedLimits::ACC0_VEL || limits == ReachedLimits::ACC1_VEL || limits == ReachedLimits::VEL) {
+            if (limits == ReachedLimits::ACC0_ACC1_VEL || limits == ReachedLimits::ACC0_ACC1 || limits == ReachedLimits::ACC0_VEL || limits == ReachedLimits::ACC1_VEL || limits == ReachedLimits::VEL) {
                 if (i == 2) {
                     a[3] = 0.0;
                 }
             }
 
-            if constexpr (set_limits) {
-                if constexpr (limits == ReachedLimits::ACC1) {
+            if (set_limits) {
+                if (limits == ReachedLimits::ACC1) {
                     if (i == 2) {
                         a[3] = aMin;
                     }
                 }
 
-                if constexpr (limits == ReachedLimits::ACC0_ACC1) {
+                if (limits == ReachedLimits::ACC0_ACC1) {
                     if (i == 0) {
                         a[1] = aMax;
                     }
@@ -322,7 +320,7 @@ public:
         }
 
         j = {0, 0, 0, 0, 0, 0, 0};
-        if constexpr (control_signs == ControlSigns::UDDU) {
+        if (control_signs == ControlSigns::UDDU) {
             a = {(t[0] > 0 ? aUp : 0), 0, (t[2] > 0 ? aDown : 0), 0, (t[4] > 0 ? aDown : 0), 0, (t[6] > 0 ? aUp : 0), af};
         } else {
             a = {(t[0] > 0 ? aUp : 0), 0, (t[2] > 0 ? aDown : 0), 0, (t[4] > 0 ? aUp : 0), 0, (t[6] > 0 ? aDown : 0), af};

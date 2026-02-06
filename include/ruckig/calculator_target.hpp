@@ -2,10 +2,9 @@
 
 #include <algorithm>
 #include <array>
-#include <format>
 #include <iostream>
 #include <limits>
-#include <optional>
+#include <ruckig/optional.hpp>
 #include <tuple>
 #include <type_traits>
 
@@ -49,7 +48,7 @@ private:
         }
 
         const Vector<double>* scale_vector = nullptr;
-        std::optional<size_t> scale_dof; // Need to find a scale DOF because limiting DOF might not be phase synchronized
+        Optional<size_t> scale_dof; // Need to find a scale DOF because limiting DOF might not be phase synchronized
         for (size_t dof = 0; dof < degrees_of_freedom; ++dof) {
             if (inp_per_dof_synchronization[dof] != Synchronization::Phase) {
                 continue;
@@ -121,7 +120,7 @@ private:
         return true;
     }
 
-    bool synchronize(std::optional<double> t_min, double& t_sync, std::optional<size_t>& limiting_dof, Vector<Profile>& profiles, bool discrete_duration, double delta_time) {
+    bool synchronize(Optional<double> t_min, double& t_sync, Optional<size_t>& limiting_dof, Vector<Profile>& profiles, bool discrete_duration, double delta_time) {
         // Check for (degrees_of_freedom == 1 && !t_min && !discrete_duration) is now outside
 
         // Possible t_syncs are the start times of the intervals and optional t_min
@@ -180,7 +179,7 @@ private:
 
             t_sync = possible_t_sync;
             if (*i == 3*degrees_of_freedom) { // Optional t_min
-                limiting_dof = std::nullopt;
+                limiting_dof = nullopt;
                 return true;
             }
 
@@ -244,8 +243,8 @@ public:
                 p.a.back() = inp.current_acceleration[dof];
                 p.t_sum.back() = 0.0;
                 blocks[dof].t_min = 0.0;
-                blocks[dof].a = std::nullopt;
-                blocks[dof].b = std::nullopt;
+                blocks[dof].a = nullopt;
+                blocks[dof].b = nullopt;
                 continue;
             }
 
@@ -310,14 +309,14 @@ public:
             if (!found_profile) {
                 const bool has_zero_limits = (inp.max_acceleration[dof] == 0.0 || inp_min_acceleration[dof] == 0.0 || inp.max_jerk[dof] == 0.0);
                 if (has_zero_limits) {
-                    if constexpr (throw_error) {
-                        throw RuckigError(std::format("zero limits conflict in step 1, dof: {} input: {}", dof, inp.to_string()));
+                    if (throw_error) {
+                        throw RuckigError("zero limits conflict in step 1, dof: " + std::to_string(dof) + " input: " + inp.to_string());
                     }
                     return Result::ErrorZeroLimits;
 
                 } else {
-                    if constexpr (throw_error) {
-                        throw RuckigError(std::format("error in step 1, dof: {} input: {}", dof, inp.to_string()));
+                    if (throw_error) {
+                        throw RuckigError("error in step 1, dof: " + std::to_string(dof) + " input: " + inp.to_string());
                     }
                     return Result::ErrorExecutionTimeCalculation;
                 }
@@ -335,7 +334,7 @@ public:
             return Result::Working;
         }
 
-        std::optional<size_t> limiting_dof; // The DoF that doesn't need step 2
+        Optional<size_t> limiting_dof; // The DoF that doesn't need step 2
         const bool found_synchronization = synchronize(inp.minimum_duration, traj.duration, limiting_dof, traj.profiles[0], discrete_duration, delta_time);
         if (!found_synchronization) {
             bool has_zero_limits = false;
@@ -347,14 +346,14 @@ public:
             }
 
             if (has_zero_limits) {
-                if constexpr (throw_error) {
-                    throw RuckigError(std::format("zero limits conflict with other degrees of freedom in time synchronization {}", traj.duration));
+                if (throw_error) {
+                    throw RuckigError("zero limits conflict with other degrees of freedom in time synchronization " + std::to_string(traj.duration));
                 }
                 return Result::ErrorZeroLimits;
 
             } else {
-                if constexpr (throw_error) {
-                    throw RuckigError(std::format("error in time synchronization: {}", traj.duration));
+                if (throw_error) {
+                    throw RuckigError("error in time synchronization: " + std::to_string(traj.duration));
                 }
                 return Result::ErrorSynchronizationCalculation;
             }
@@ -372,7 +371,7 @@ public:
         }
         traj.cumulative_times[0] = traj.duration;
 
-        if constexpr (return_error_at_maximal_duration) {
+        if (return_error_at_maximal_duration) {
             if (traj.duration > 7.6e3) {
                 return Result::ErrorTrajectoryDuration;
             }
@@ -510,8 +509,8 @@ public:
                 } break;
             }
             if (!found_time_synchronization) {
-                if constexpr (throw_error) {
-                    throw RuckigError(std::format("error in step 2 in dof: {} for t sync: {} input: {}", dof, traj.duration, inp.to_string()));
+                if (throw_error) {
+                    throw RuckigError("error in step 2 in dof: " + std::to_string(dof) + " for t sync: " + std::to_string(traj.duration) + " input: " + inp.to_string());
                 }
                 return Result::ErrorSynchronizationCalculation;
             }

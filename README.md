@@ -19,6 +19,8 @@
   </a>
 </p>
 
+just made this code can build in C++11. 
+
 Ruckig generates trajectories on-the-fly, allowing robots and machines to react instantaneously to sensor input. Ruckig calculates a trajectory to a *target* waypoint (with position, velocity, and acceleration) starting from *any* initial state limited by velocity, acceleration, and jerk constraints. Besides the target state, Ruckig allows to define intermediate positions for waypoint following. For state-to-state motions, Ruckig guarantees a time-optimal solution. With intermediate waypoints, Ruckig calculates the path and its time parametrization jointly, resulting in significantly faster trajectories compared to traditional methods.
 
 More information can be found at [ruckig.com](https://ruckig.com) and in the corresponding paper [Jerk-limited Real-time Trajectory Generation with Arbitrary Target States](https://arxiv.org/abs/2105.04830), accepted for the *Robotics: Science and Systems (RSS), 2021* conference.

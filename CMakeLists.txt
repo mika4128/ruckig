@@ -8,7 +8,7 @@ include(GNUInstallDirs)
 
 
 option(BUILD_EXAMPLES "Build example programs" ON)
-option(BUILD_PYTHON_MODULE "Build Python wrapper with nanobind" OFF)
+option(BUILD_PYTHON_MODULE "Build Python wrapper with pybind11" OFF)
 option(BUILD_CLOUD_CLIENT "Build cloud client to calculate Ruckig Pro trajectories remotely" ON)
 option(BUILD_TESTS "Build tests" ON)
 option(BUILD_BENCHMARK "Build benchmark" OFF)
@@ -33,7 +33,7 @@ add_library(ruckig
   src/ruckig/velocity_third_step2.cpp
 )
 
-target_compile_features(ruckig PUBLIC cxx_std_20)
+target_compile_features(ruckig PUBLIC cxx_std_11)
 target_include_directories(ruckig PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
@@ -105,14 +105,11 @@ endif()
 
 
 if(BUILD_PYTHON_MODULE)
-  find_package(Python 3.8 REQUIRED COMPONENTS Interpreter Development.Module)
-  execute_process(
-    COMMAND "${Python_EXECUTABLE}" -m nanobind --cmake_dir
-    OUTPUT_STRIP_TRAILING_WHITESPACE OUTPUT_VARIABLE nanobind_ROOT)
-  find_package(nanobind CONFIG REQUIRED)
+  find_package(Python 3.8 REQUIRED COMPONENTS Interpreter Development)
+  find_package(pybind11 REQUIRED)
 
-  nanobind_add_module(python_ruckig NB_STATIC src/ruckig/python.cpp)
-  target_compile_features(python_ruckig PUBLIC cxx_std_17)
+  pybind11_add_module(python_ruckig src/ruckig/python.cpp)
+  target_compile_features(python_ruckig PUBLIC cxx_std_11)
   target_link_libraries(python_ruckig PUBLIC ruckig)
   if(BUILD_CLOUD_CLIENT)
     target_compile_definitions(python_ruckig PUBLIC WITH_CLOUD_CLIENT)

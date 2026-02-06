@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <chrono>
+#include <tuple>
 
 #include "randomizer.hpp"
 
@@ -76,7 +77,7 @@ void benchmark(size_t n, double number_trajectories, bool verbose = true) {
             d.fill_or_zero(input.current_acceleration, 0.8);
             p.fill(input.target_position);
             d.fill_or_zero(input.target_velocity, 0.7);
-            if constexpr (std::is_same<OTGType, RuckigThrow<DOFs>>::value) {
+            if (std::is_same<OTGType, RuckigThrow<DOFs>>::value) {
                 d.fill_or_zero(input.target_acceleration, 0.6);
             }
 
@@ -89,7 +90,7 @@ void benchmark(size_t n, double number_trajectories, bool verbose = true) {
             // input.target_position[0] = input.current_position[0] + 1.0;
             // input.max_jerk[0] = 0.0;
 
-            if constexpr (std::is_same<OTGType, RuckigThrow<DOFs>>::value) {
+            if (std::is_same<OTGType, RuckigThrow<DOFs>>::value) {
                 if (!otg.template validate_input<false>(input)) {
                     continue;
                 }
@@ -109,9 +110,12 @@ void benchmark(size_t n, double number_trajectories, bool verbose = true) {
         global.emplace_back(global_);
     }
 
-    const auto [average_mean, average_std] = analyze(average);
-    const auto [worst_mean, worst_std] = analyze(worst);
-    const auto [global_mean, global_std] = analyze(global);
+    double average_mean, average_std;
+    std::tie(average_mean, average_std) = analyze(average);
+    double worst_mean, worst_std;
+    std::tie(worst_mean, worst_std) = analyze(worst);
+    double global_mean, global_std;
+    std::tie(global_mean, global_std) = analyze(global);
 
     if (verbose) {
         std::cout << "---" << std::endl;

@@ -176,7 +176,7 @@ public:
 
     template<bool throw_error>
     Result continue_calculation(const InputParameter<DOFs, CustomVector>&, Trajectory<DOFs, CustomVector>&, double, bool&) {
-        if constexpr (throw_error) {
+        if (throw_error) {
             throw RuckigError("continue calculation not available in Ruckig Community Version.");
         }
         return Result::Error;
