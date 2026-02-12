@@ -251,7 +251,7 @@ TEST_CASE("trajectory") {
         CHECK( result == Result::Working );
         CHECK( traj.get_duration() == doctest::Approx(3.1748) );
 
-        std::array<double, 1> new_position, new_velocity, new_acceleration;
+        std::array<double, 1> new_position{}, new_velocity{}, new_acceleration{};
         traj.at_time(0.0, new_position, new_velocity, new_acceleration);
         CHECK( array_eq(new_position, input.current_position) );
 

@@ -83,7 +83,9 @@ public:
 
         // Remove first intermediate waypoint if section did change
         if (did_section_change && !input.intermediate_positions.empty()) {
-            input.intermediate_positions.erase(input.intermediate_positions.begin());
+            input.intermediate_positions.assign(
+                input.intermediate_positions.begin() + 1,
+                input.intermediate_positions.end());
         }
     }
 

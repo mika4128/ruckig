@@ -27,9 +27,16 @@ protected:
     size_t size {0};
 
 public:
-    // Sort when accessing the elements
+    // Sort when accessing the elements (range is [begin, begin+size), size <= N; pragma silences false positive from inlined std::sort)
     const iterator begin() {
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Warray-bounds"
+#endif
         std::sort(data.begin(), data.begin() + size);
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic pop
+#endif
         return data.begin();
     }
 
