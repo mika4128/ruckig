@@ -34,6 +34,11 @@ add_library(ruckig
 )
 
 target_compile_features(ruckig PUBLIC cxx_std_11)
+if(MSVC)
+  target_compile_options(ruckig PRIVATE /W4)
+else()
+  target_compile_options(ruckig PRIVATE -Wall -Wextra -Wunused-parameter)
+endif()
 target_include_directories(ruckig PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
