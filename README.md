@@ -21,6 +21,7 @@
 
 ### <span style="color:yellow">**⚠ 这里为了适配我的老软件，降级支持 C++11，同时开启一些警告检查。** </span>
 我的仓库：[链接](https://github.com/mika4128/ruckig.git)
+原仓库: [链接](https://github.com/pantor/ruckig.git)
 
 Ruckig generates trajectories on-the-fly, allowing robots and machines to react instantaneously to sensor input. Ruckig calculates a trajectory to a *target* waypoint (with position, velocity, and acceleration) starting from *any* initial state limited by velocity, acceleration, and jerk constraints. Besides the target state, Ruckig allows to define intermediate positions for waypoint following. For state-to-state motions, Ruckig guarantees a time-optimal solution. With intermediate waypoints, Ruckig calculates the path and its time parametrization jointly, resulting in significantly faster trajectories compared to traditional methods.
 
